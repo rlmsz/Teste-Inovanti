@@ -1,7 +1,7 @@
 
 
 
-export function SearchBar({pesquisa,setPesquisa}:{pesquisa:string,setPesquisa:React.Dispatch<React.SetStateAction<string>>}){
+export function SearchBar({setPesquisa}:{setPesquisa:React.Dispatch<React.SetStateAction<string>>}){
         function handleChange(event: { target: { value: string } }){
             console.log(event.target.value)
             setPesquisa((event.target.value).toLowerCase())

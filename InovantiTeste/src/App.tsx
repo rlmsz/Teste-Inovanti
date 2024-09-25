@@ -18,7 +18,7 @@ function App() {
   return (
     <>
     <Header/>
-    <SearchBar pesquisa={pesquisa} setPesquisa={setPesquisa}/>
+    <SearchBar  setPesquisa={setPesquisa}/>
     <ListaPoke data={data} pesquisa={pesquisa}/>
     </>
   )

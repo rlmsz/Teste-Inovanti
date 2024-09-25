@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-
+import { createPortal } from "react-dom";
+import { Modal } from "./Modal";
 interface Pokemon {
   name: string;
   url: string;
@@ -47,12 +48,15 @@ export function SetaDireita() {
 export function ListaPoke({ data, pesquisa }:{data:never[],pesquisa:string}) {
   const [pagina, setPagina] = useState(0);
   const filtroPesquisa = (pokemon: Pokemon) => pokemon.name.includes(pesquisa);
-  
-  
+  const [showModal, setShowModal] = useState(false)
+  const [idPokemon,setIdPokemon] = useState<number>(0)
   useEffect(() =>{
     setPagina(0)},[pesquisa])
 
-
+  const abrirModal = (index:number) =>{
+    setIdPokemon(index+1)
+    setShowModal(true)
+  }
 
   const listaPoke = data
     .map((pokemon: Pokemon, originalIndex: number) => ({
@@ -63,22 +67,24 @@ export function ListaPoke({ data, pesquisa }:{data:never[],pesquisa:string}) {
     .slice(pagina * 40, (pagina + 1) * 40)
     .map((pokemon: Pokemon) => (
       <li key={pokemon.name}>
-        <button className="flex flex-col items-center ">
+        <button onClick={()=> abrirModal(pokemon.originalIndex)} className="flex flex-col items-center ">
           <p className="pb-4  text-xl font-semibold">{pokemon.name}</p>
           <img
             src={`https://raw.githubusercontent.com/PokeAPI/sprites/refs/heads/master/sprites/pokemon/other/official-artwork/${
               pokemon.originalIndex + 1
             }.png`}
             style={{ width: 300, height: 300 }}
-            className="object-scale-down border-2 border-stone-500 rounded-lg"
+            className="object-scale-down border-2 border-stone-500 rounded-lg hover:bg-gray-500 hover:border-green-700"
             alt={pokemon.name}
           />
         </button>
       </li>
     ));
 
+    
   return (
     <div className="flex flex-col py-10 gap-5">
+    {showModal && createPortal(<Modal idPokemon={idPokemon} onClose={() => setShowModal(false)}/>, document.body)}
       <div className="flex justify-around gap-10">
         <button
           className="bg-blue-500 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded disabled:bg-gray-200"
@@ -89,7 +95,7 @@ export function ListaPoke({ data, pesquisa }:{data:never[],pesquisa:string}) {
         </button>
         <button
           className="bg-blue-500 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded disabled:bg-gray-200"
-          disabled={data.filter(filtroPesquisa).length <= 40}
+          disabled={data.filter(filtroPesquisa).length <= 40 || (data.filter(filtroPesquisa).length)/40 <= pagina+1}
           onClick={() => setPagina(pagina + 1)}
         >
           <SetaDireita />
