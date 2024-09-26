@@ -1,3 +1,4 @@
+import { act } from "@testing-library/react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface Sprites {
@@ -46,10 +47,11 @@ export function Modal({
         const response = await fetch(
           `https://pokeapi.co/api/v2/pokemon/${idPokemon}`
         );
-
+        
         if (response.ok) {
           const data = await response.json();
-          setDataModal(data);
+          act(()=> { 
+          setDataModal(data)});
         } else {
           throw new Error(response.status.toString());
         }
