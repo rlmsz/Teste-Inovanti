@@ -1,27 +1,40 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import {Header} from './components/Header'
-import { ListaPoke } from './components/ListaPoke'
-import {SearchBar} from './components/SearchBar'
-<link href="./index.css" rel='stylesheet'></link>
+import { useEffect, useState } from "react";
+import { Header } from "./components/Header";
+import { ListaPoke } from "./components/ListaPoke";
+import { SearchBar } from "./components/SearchBar";
+<link href="./index.css" rel="stylesheet"></link>;
 
-
-
-
-
-function App() {
-  const [data,setData] = useState([])
+const App = () => {
+  const [data, setData] = useState([]);
+  const [pesquisa, setPesquisa] = useState<string>("");
   useEffect(() => {
-    fetch('https://pokeapi.co/api/v2/pokemon-species/?limit=10100').then(response => response.json()).then(data => {console.log(data.results) ; setData(data.results)})
-},[])
-  const [pesquisa,setPesquisa] = useState<string>("")
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://pokeapi.co/api/v2/pokemon-species?limit=10100"
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setData(data.results);
+        } else {
+          throw new Error(response.status.toString());
+        }
+      } catch {
+        console.log(Error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
-    <Header/>
-    <SearchBar  setPesquisa={setPesquisa}/>
-    <ListaPoke data={data} pesquisa={pesquisa}/>
+      <Header/>
+      <SearchBar setPesquisa={setPesquisa} />
+      <ListaPoke data={data} pesquisa={pesquisa} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
